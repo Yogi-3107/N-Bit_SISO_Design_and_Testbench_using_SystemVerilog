@@ -26,6 +26,11 @@
     - [3.2.7 Environment](#327-Environment)
   - [3.3 Testbench_Top](#33-Testbench_Top)
  
+- [4. Simulations and Conclusion]
+  - [4.1 Without Clock Synchronization](#41-Without-Clock-Synchronization)
+  - [4.2 With Clock Synchronization](#42-With-Clock-Synchronization)
+  - [4.3 Conclusion](#43-Conclusion)
+ 
 ## 1. Tools and resources used
 
 ### 1.1 AMD Vivado
@@ -332,3 +337,9 @@ module testbench_top;
 
 endmodule
 ```
+
+## 4. Simulations and Conclusion
+
+### 4.1 Without Clock Synchronization
+
+In [Testbench_Top](Testbench_Architecture/testbench_top.sv) module, in line-26, if we change the toggle time of 5ns (#5) to 10ns (#10) the synchronization with the [Driver](Testbench_Architecture/Driver/driver.sv) class and the [Monitor](Testbench_Architecture/Monitor/monitor.sv) class fails and the Scoreboard gives an error as the output received is erroneous as shown below:
