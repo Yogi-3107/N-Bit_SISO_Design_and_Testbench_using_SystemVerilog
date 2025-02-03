@@ -18,6 +18,13 @@
   - [3.1 SISO Design](#31-SISO-Design)
   - [3.2 Testbench_Top Components](#32-Testbench-Components)
     - [3.2.1 Interface](#321-Interface)
+    - [3.2.2 Transaction](#322-Transaction)
+    - [3.2.3 Generator](#323-Generator)
+    - [3.2.4 Driver](#324-Driver)
+    - [3.2.5 Monitor](#325-Monitor)
+    - [3.2.6 Scoreboard](#326-Scoreboard)
+    - [3.2.7 Environment](#327-Environment)
+  - [3.3 Testbench_Top](#33-Testbench_Top)
  
 ## 1. Tools and resources used
 
@@ -77,3 +84,5 @@ The operation of a SISO shift register relies on two primary components: the fli
 6. <p align="justify"><b>Scoreboard:</b> The Scoreboard can have a reference model that behaves the same way as the DUT. This model reflects the expected behavior of the DUT. Input sent to the DUT is also sent to this reference model. So if the DUT has a functional problem, then the output from the DUT will not match the output from our reference model. So comparison of outputs from the design and the reference model will tell us if there is a functional defect in the design. This is usually done in the scoreboard.</p>
 7. <p align="justify"><b>Environment:</b> It makes the verification more flexible and scalable because more components can be plugged into the same environment for a future project.</p>
 8. <p align="justify"><b>Testbench_Top:</b> This is the topmost file, which connects the DUT and Environment. It consists of DUT, Environment and interface instances, the interface connects the DUT and Environemnt.</p>
+
+## 3. SISO Design and Testbench Components
