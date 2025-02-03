@@ -16,7 +16,7 @@
  
 - [3. SISO Design and Testbench Components](#3-SISO-Design-and-Testbench-Components)
   - [3.1 SISO Design](#31-SISO-Design)
-  - [3.2 Testbench_Top Components](#32-Testbench-Components)
+  - [3.2 Testbench_Top Components](#32-Testbench_Top-Components)
     - [3.2.1 Interface](#321-Interface)
     - [3.2.2 Transaction](#322-Transaction)
     - [3.2.3 Generator](#323-Generator)
