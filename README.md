@@ -1,6 +1,6 @@
 # N-bit SISO Design and Complete Testbench Architecture using SystemVerilog
 
-# NOTE: This Project is still in progress. This message will be omitted after the completion
+> NOTE: This project was successfully completed on 03/02/2025
 
 <p align="justify">In this project, a <b>N-bit Asynchronous SISO</b> with a <b>Left-Shift</b> operation is designed along with a <i>Testbench Architecture</i> which employs an <b>Interface</b> to establish a connection between the <b>Design Under Test</b>(<i>DUT</i>) and an <b>Environment</b> consisting components such as a <i>Generator, Driver, Monitor, and a Scoreboard</i>. These components have <b>transactions</b> between them, which in turn helps us to verify the functionality of the circuit.</p>
 
