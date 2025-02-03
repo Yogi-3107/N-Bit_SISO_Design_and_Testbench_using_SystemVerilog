@@ -88,3 +88,7 @@ The operation of a SISO shift register relies on two primary components: the fli
 ## 3. SISO Design and Testbench Components
 
 ### 3.1 SISO Design
+
+Below is the SystemVerilog code/RTL Design for SISO Shift Register:
+
+https://github.com/Yogi-3107/N-Bit_SISO_Design_and_Testbench_using_SystemVerilog/blob/f4cde9223ced687ee276eca1c71a30ef854c53ce/SISO_Design/siso.sv
