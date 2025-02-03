@@ -89,6 +89,246 @@ The operation of a SISO shift register relies on two primary components: the fli
 
 ### 3.1 SISO Design
 
-Below is the SystemVerilog code/RTL Design for SISO Shift Register:
+Below is the SystemVerilog code/RTL Design for [SISO](SISO_Design/siso.sv) Shift Register module:
 
-https://github.com/Yogi-3107/N-Bit_SISO_Design_and_Testbench_using_SystemVerilog/blob/f4cde9223ced687ee276eca1c71a30ef854c53ce/SISO_Design/siso.sv
+```SystemVerilog
+module siso #(parameter N = 4)(
+  input logic clk, 
+  input logic rst, 
+  input logic serial_in,
+  output logic serial_out
+);
+  
+  logic [N-1:0] temp;
+  
+  always_ff@(posedge clk, posedge rst) begin
+    if (rst) begin
+      temp <= '0; // At rst = 1, resets value to 0
+    end
+    else begin
+      //Left-Shift Operation at rst = 0, clk = 1
+      temp <= {temp[N-2:0],serial_in};
+    end
+  end
+  
+  assign serial_out = temp[N-1];
+  
+endmodule
+```
+
+### 3.2 Testbench_Top Components
+
+#### 3.2.1 Interface
+
+SystemVerilog code for the [Interface](Testbench_Architecture/Interface/intf.sv):
+
+```SystemVerilog
+interface intf #(parameter N = 4) (input logic clk);
+  logic rst;
+  logic serial_in;
+  logic serial_out;
+endinterface
+```
+
+#### 3.2.2 Transaction
+
+Code for the [Transaction](Testbench_Architecture/Transaction/transaction.sv) class:
+
+```SystemVerilog
+class transaction;
+  rand bit serial_in;
+  bit serial_out;
+  
+  function void display(string tag);
+    $display("[%s] serial_in=%b | serial_out=%b", tag, serial_in, serial_out);
+  endfunction
+  
+endclass
+```
+
+#### 3.2.3 Generator
+
+Code for the [Generator](Testbench_Architecture/Generator/generator.sv) class:
+
+```SystemVerilog
+class generator;
+  rand transaction tx;
+  mailbox gen2drv;
+  
+  function new(mailbox gen2drv);
+    this.gen2drv = gen2drv;
+  endfunction
+  
+  task run();
+    repeat(10) begin
+      tx = new();
+      assert(tx.randomize());
+      gen2drv.put(tx);
+    end
+  endtask
+
+endclass
+```
+
+#### 3.2.4 Driver
+
+Code for the [Driver](Testbench_Architecture/Driver/driver.sv) class:
+
+```SystemVerilog
+class driver;
+  virtual intf vif;
+  mailbox gen2drv;
+  
+  function new(virtual intf vif, mailbox gen2drv);
+    this.vif = vif;
+    this.gen2drv = gen2drv;
+  endfunction
+  
+  task run();
+    transaction tx;
+    vif.rst = 1;
+    #10 vif.rst = 0;
+    
+    forever begin
+      gen2drv.get(tx);
+      vif.serial_in = tx.serial_in;
+      #10;
+    end
+  endtask
+  
+endclass
+```
+
+#### 3.2.5 Monitor
+
+Code for the [Monitor](Testbench_Architecture/Monitor/monitor.sv) class:
+
+```SystemVerilog
+class monitor;
+  virtual intf vif;
+  mailbox mon2scb;
+  
+  function new(virtual intf vif, mailbox mon2scb);
+    this.vif = vif;
+    this.mon2scb = mon2scb;
+  endfunction
+  
+  task run();
+    transaction tx;
+    forever begin
+      tx = new();
+      #10;
+      tx.serial_in = vif.serial_in;
+      tx.serial_out = vif.serial_out;
+      mon2scb.put(tx);
+    end
+  endtask
+  
+endclass
+```
+
+#### 3.2.6 Scoreboard
+
+Code for the [Scoreboard](Testbench_Architecture/Scoreboard/scoreboard.sv) class:
+
+```SystemVerilog
+class scoreboard;
+  parameter N=4;
+  mailbox mon2scb;
+  logic [N-1:0] expected;
+  
+  function new(mailbox mon2scb);
+    this.mon2scb = mon2scb;
+  endfunction
+  
+  task run();
+    transaction tx;
+    expected = 0;
+    
+    forever begin
+      mon2scb.get(tx);
+      expected <= {expected[N-2:0], tx.serial_in};
+      if (tx.serial_out !== expected[N-1]) begin
+        $display("MISMATCH: Expected=%b | Got=%b;", expected[N-1], tx.serial_out);
+      end
+      else
+        tx.display("SCOREBOARD");
+    end
+  endtask
+  
+endclass
+```
+
+#### 3.2.7 Environment
+
+Code for the [Environment](Testbench_Architecture/Environment/environment.sv) class:
+
+```SystemVerilog
+class environment;
+  generator gen;
+  driver drv;
+  monitor mon;
+  scoreboard scb;
+  mailbox gen2drv;
+  mailbox mon2scb;
+  
+  function  new(virtual intf vif);
+    gen2drv = new();
+    mon2scb = new();
+    gen = new(gen2drv);
+    drv = new(vif, gen2drv);
+    mon = new(vif, mon2scb);
+    scb = new(mon2scb);
+  endfunction
+  
+  task run();
+    fork
+      gen.run();
+      drv.run();
+      mon.run();
+      scb.run();
+    join
+  endtask
+
+endclass
+```
+
+### 3.3 Testbench_Top
+
+The final design for the [Testbench_Top](Testbench_Architecture/testbench_top.sv) module is given below:
+
+```SystemVerilog
+`include "intf.sv"
+`include "transaction.sv"
+`include "generator.sv"
+`include "driver.sv"
+`include "monitor.sv"
+`include "scoreboard.sv"
+`include "environment.sv"
+
+module testbench_top;
+  logic clk;
+  intf siso_if(clk);
+  siso #(4) dut (
+    .clk(clk),
+    .rst(siso_if.rst),
+    .serial_in(siso_if.serial_in),
+    .serial_out(siso_if.serial_out)
+  );
+  
+  environment env;
+  
+  initial begin
+    env = new(siso_if);
+    env.run();
+  end
+  
+  always #5 clk = ~clk;
+    
+  initial begin
+    clk = 0;
+    #150 $finish;
+  end
+
+endmodule
+```
