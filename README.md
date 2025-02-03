@@ -14,6 +14,11 @@
   - [2.1 Serial In Serial Out Shift Register](#21-Serial-In-Serial-Out-Shift-Register)
   - [2.2 SystemVerilog Testbench Architecture](#22-SystemVerilog-Testbench-Architecture)
  
+- [3. SISO Design and Testbench Components]
+  - [3.1 SISO Design](#31-SISO-Design)
+  - [3.2 Testbench_Top Components](#32-Testbench-Components)
+    - [3.2.1 Interface](#321-Interface)
+ 
 ## 1. Tools and resources used
 
 ### 1.1 AMD Vivado
