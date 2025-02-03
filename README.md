@@ -26,7 +26,7 @@
     - [3.2.7 Environment](#327-Environment)
   - [3.3 Testbench_Top](#33-Testbench_Top)
  
-- [4. Simulations and Conclusion]
+- [4. Simulations and Conclusion](#4-Simulations-and-Conclusion)
   - [4.1 Without Clock Synchronization](#41-Without-Clock-Synchronization)
   - [4.2 With Clock Synchronization](#42-With-Clock-Synchronization)
   - [4.3 Conclusion](#43-Conclusion)
@@ -342,4 +342,36 @@ endmodule
 
 ### 4.1 Without Clock Synchronization
 
-In [Testbench_Top](Testbench_Architecture/testbench_top.sv) module, in line-26, if we change the toggle time of 5ns (#5) to 10ns (#10) the synchronization with the [Driver](Testbench_Architecture/Driver/driver.sv) class and the [Monitor](Testbench_Architecture/Monitor/monitor.sv) class fails and the Scoreboard gives an error as the output received is erroneous as shown below:
+In [Testbench_Top](Testbench_Architecture/testbench_top.sv) module, in line-26, if we change the toggle time of the **clock**(_clk_) from 5ns (#5) to 10ns (#10) the synchronization with the [Driver](Testbench_Architecture/Driver/driver.sv) class and the [Monitor](Testbench_Architecture/Monitor/monitor.sv) class fails and the Scoreboard gives an error as the output received is erroneous as shown below:
+
+Simulation run in **Vivado 2024.2**:
+
+<img src="https://github.com/Yogi-3107/N-Bit_SISO_Design_and_Testbench_using_SystemVerilog/blob/main/Simulation_Results/Without_Clock_Synchronization.png" width="700" height="300">
+
+Simulation run in **Synopsys VCS 2023.03** via **EDA Playground**:
+
+<img src="https://github.com/Yogi-3107/N-Bit_SISO_Design_and_Testbench_using_SystemVerilog/blob/main/Simulation_Results/Without_Clock_Synchronization_SynopsysVCS.png" width="650" height="400">
+
+<p align="justify">As we can see, in both the simulations the results we get are erroneous because the components do not synchronize properly, so the #10 delays in the driver and monitor tasks do not align with the clock period. Misalignment between clock cycles and delays result in incorrect sampling of serial_out which in turn results in the <i>mismatch</i> between the output received and the expected output.</p>
+
+### 4.2 With Clock Synchronization
+
+<p align="justify">Now, if we change the toggle time of the clock back to 5ns, the components are perfectly synchronized and the sampling of the output signal is correct. The results for the same are shown below:</p>
+
+Simulation run in **Vivado 2024.2**:
+
+<img src="https://github.com/Yogi-3107/N-Bit_SISO_Design_and_Testbench_using_SystemVerilog/blob/main/Simulation_Results/With_Clock_Synchronization.png" width="700" height="300">
+
+Simulation run in **Synopsys VCS 2023.03** via **EDA Playground**:
+
+<img src="https://github.com/Yogi-3107/N-Bit_SISO_Design_and_Testbench_using_SystemVerilog/blob/main/Simulation_Results/With_Clock_Synchronization_SynopsysVCS.png" width="650" height="400">
+
+As we can see, with the perfect synchronizaion of the components the erroneous results are cleared out and correct sampling of the signal is achieved. This is turn results in correct results.
+
+### 4.3 Conclusion
+
+<p align="jusitfy">This project successfully implements an N-bit Serial-In Serial-Out (SISO) shift register using SystemVerilog and validates its functionality through a structured testbench architecture. The testbench follows a verification methodology that includes key components such as interface, transaction, generator, driver, monitor, scoreboard, and environment.</p>
+
+<p align="jusitfy">The results confirm that the shift register correctly shifts the input bits through its pipeline and produces the expected output after N clock cycles. The scoreboard ensures correctness by comparing the expected vs. actual outputs, and the simulation runs for a finite time to avoid indefinite execution.</p>
+
+<p align="jusitfy">This project demonstrates key digital design and verification concepts, such as synchronous sequential circuits, shift register operations, and UVM-style verification, making it a robust and scalable verification environment.</p>
