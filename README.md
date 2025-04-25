@@ -35,7 +35,7 @@
 
 ### 1.1 AMD Vivado
 
-<img src="https://www.xilinx.com/content/xilinx/en/support/quality/_jcr_content/root/responsivegridgraybottom/responsivegridgraybottomcolcontainer/parsyscol3/xilinxpromo_7cf.img.jpg/1686869423281.jpg">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvipsjEMOSFnuO67Oko4i2hAVlCahPufANvw&s">
 
 [AMD Vivado Design Suite](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vivado.html) is a software suite for _synthesis_ and _analysis_ of **Hardware Description Language** (_HDL_) designs, superseding _Xilinx ISE_ with additional features for **System-on-Chip** (_SoC_) development and **High-Level Synthesis** (_HLS_). Vivado represents a ground-up rewrite and re-thinking of the entire design flow (compared to ISE). Like the later versions of ISE, Vivado includes the in-built logic simulator. Vivado also introduces high-level synthesis, with a toolchain that converts C code into programmable logic.
 
